@@ -300,33 +300,34 @@ int main()
 			printf("\nTapez votre choix : ");
 			fpurge(stdin);
 			scanf("%d",&choix_sous_menu);
-		}
 
-		if (choix_sous_menu==1)
-		{
-			if (plein(nbe_adh,ADH)==1)
+			if (choix_sous_menu==1)
 			{
-				printf("Désolée, il y a trop d'adhérent pour l'instant. Nous vous recontacterons.\n");
+				if (plein(nbe_adh,ADH)==1)
+				{
+					printf("Désolée, il y a trop d'adhérent pour l'instant. Nous vous recontacterons.\n");
+				}
+				else
+				{
+					consigne_ecriture();
+					saisie_adherent(tab_adh,&nbe_adh);
+					printf("L'adhérent à bien été enregistré\n");
+				}
 			}
-			else
+			if (choix_sous_menu==2)
 			{
-				consigne_ecriture();
-				saisie_adherent(tab_adh,&nbe_adh);
-				printf("L'adhérent à bien été enregistré\n");
+				if (plein(nbe_livre,MAX)==1)
+				{
+					printf("Désolée, la bibliothèque ne peut plus recevoir de nouveau ouvrage tant que nous n'agrandissons pas.\n");
+				}
+				else
+				{
+					consigne_ecriture();
+					saisie_ouvrage(tab_livre,&nbe_livre);
+					printf("Le livre à bien été ajouté à la bibliothèque\n");
+				}
 			}
-		}
-		if (choix_sous_menu==2)
-		{
-			if (plein(nbe_livre,MAX)==1)
-			{
-				printf("Désolée, la bibliothèque ne peut plus recevoir de nouveau ouvrage tant que nous n'agrandissons pas.\n");
-			}
-			else
-			{
-				consigne_ecriture();
-				saisie_ouvrage(tab_livre,&nbe_livre);
-				printf("Le livre à bien été ajouté à la bibliothèque\n");
-			}
+
 		}
 
 		if (choix_menu==2)
@@ -394,6 +395,7 @@ int main()
 			scanf("%d",&choix_sous_menu);
 		}
 
+		fpurge(stdin);
 		separation_menu();
 	}while (choix_menu != 0);
 	return 0;
