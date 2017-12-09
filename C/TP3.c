@@ -248,7 +248,7 @@ void saisie_ouvrage(LIVRE *t,int *nbe)
 	printf("Donner le numéro du livre : ");
 	scanf("%d",&t[*nbe].num_livre);
 	printf("Donnez le nombre d'exemplaire : ");
-	scanf("%d",&t[*nbe.nb_exemplaire]);
+	scanf("%d",&t[*nbe].nb_exemplaire);
 	printf("Donnez les numéros d'exemplaire : \n");
 	i=0;
 	while(i<*nbe)
