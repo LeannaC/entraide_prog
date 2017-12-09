@@ -253,7 +253,7 @@ void saisie_ouvrage(LIVRE *t,int *nbe)
 	i=0;
 	while(i<*nbe)
 	{
-		scanf("%d",&t[*nbe].num_exemplaire);
+		scanf("%d",&t[*nbe].num_exemplaire[i]);
 		i++;
 	}
 	t[*nbe].nb_livres_dispo=t[*nbe].nb_exemplaire;
