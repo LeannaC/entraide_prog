@@ -251,7 +251,7 @@ void saisie_ouvrage(LIVRE *t,int *nbe)
 	scanf("%d",&t[*nbe].nb_exemplaire);
 	printf("Donnez les numéros d'exemplaire : \n");
 	i=0;
-	while(i<*nbe)
+	while(i<t[*nbe].nb_exemplaire)
 	{
 		scanf("%d",&t[*nbe].num_exemplaire[i]);
 		i++;
@@ -287,6 +287,7 @@ int main()
 		printf("5- Supprimer\n");
 		printf("0- Fin de la journée\n");
 		printf("\nTaper votre choix : ");
+		fpurge(stdin);
 		scanf("%d",&choix_menu);
 
 		if (choix_menu==1)
@@ -297,6 +298,7 @@ int main()
 			printf("2- Ajouter un ouvrage\n");
 			printf("3- Un adherent emprunte un livre\n");
 			printf("\nTapez votre choix : ");
+			fpurge(stdin);
 			scanf("%d",&choix_sous_menu);
 		}
 
@@ -338,6 +340,7 @@ int main()
 			printf("5- Afficher les emprunts en cours d'un adherent\n");
 			printf("6- Afficher le nombre de livre emprunté pour un certain jour\n");
 			printf("\nTapez votre choix : ");
+			fpurge(stdin);
 			scanf("%d",&choix_sous_menu);
 
 			if (choix_sous_menu==1)
@@ -364,6 +367,7 @@ int main()
 			printf("4- Chercher le nombre de livre emprunté par un adherent depuis son adhesion\n");
 			printf("5- Verifier si un adherent n'est pas en retard pour rendre un livre\n");
 			printf("\nTapez votre choix : ");
+			fpurge(stdin);
 			scanf("%d",&choix_sous_menu);
 		}
 
@@ -374,6 +378,7 @@ int main()
 			printf("\n1- Trier les adhérents par ordre alphabétique\n");
 			printf("2- Trier les livres par nombre d'exemplaire dans l'ordre decroissant");
 			printf("\nTapez votre choix : ");
+			fpurge(stdin);
 			scanf("%d",&choix_sous_menu);
 		}
 
@@ -385,6 +390,7 @@ int main()
 			printf("2- Supprimer un livre\n");
 			printf("3- Supprimer une réservation (Rendre un livre)\n");
 			printf("\nTapez votre choix : ");
+			fpurge(stdin);
 			scanf("%d",&choix_sous_menu);
 		}
 
