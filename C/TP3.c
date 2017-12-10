@@ -33,7 +33,6 @@ typedef struct reservations
 	int num_exemplaire_emprunte; // Exemple : 3 
 	int num_adh; // Exemple : 1
 	char date_debut_emprunt[10]; // Exemple : 15/11/2013
-	char date_fin_emprunt[10]; // Exemple : 30/11/2013
 } RESA; // Struct des emprunts de la bibliothèque
 
 void remplissage_adherent (ADHERENT *t,int *nbe)
@@ -171,7 +170,6 @@ void remplissage_reservation(RESA *t, int *nbe)
         fpurge(stdin);
         fscanf(fichier,"%s",t[i].date_debut_emprunt);
         fpurge(stdin);
-        fscanf(fichier,"%s",t[i].date_fin_emprunt);
 		i++;
 	}
 	fclose(fichier);
@@ -189,7 +187,7 @@ void affichage_reservation(RESA *t, int nbe)
 		printf("N° Livre : %d\n",t[i].num_livre);
 		printf("N° exemplaire : %d\n",t[i].num_exemplaire_emprunte);
 		printf("N° adhérent : %d\n",t[i].num_adh);
-        printf("Emprunt du %s au %s\n",t[i].date_debut_emprunt,t[i].date_fin_emprunt);
+        printf("Emprunt le %s\n",t[i].date_debut_emprunt);
 		i++;
 	}
 	printf("\n");
@@ -225,7 +223,10 @@ void saisie_adherent (ADHERENT*t,int *nbe)
 
 void consigne_ecriture ()
 {
-	printf("Consigne à respecter : Veuillez ecrire en minuscule s'il vous plait\n");
+	printf("Consigne à respecter : \n");
+	printf("- Veuillez ecrire en minuscule s'il vous plait\n");
+	printf("- Veuillez remplacer les espaces par : _\n");
+	printf("- Lorsque vous tapez une date, séparer les chiffres avec : /\n");
 	printf("\n");
 	return;
 }
@@ -240,7 +241,7 @@ void separation_menu()
 void saisie_ouvrage(LIVRE *t,int *nbe)
 {
 	int i;
-	printf("Donner le titre de l'auteur : ");
+	printf("\nDonner le titre de l'auteur : ");
 	scanf("%s",t[*nbe].nom_auteur);
 	printf("Donner le titre du livre : ");
 	scanf("%s",t[*nbe].titre_livre);
@@ -257,6 +258,78 @@ void saisie_ouvrage(LIVRE *t,int *nbe)
 		i++;
 	}
 	t[*nbe].nb_livres_dispo=t[*nbe].nb_exemplaire;
+	return;
+}
+/*
+void saisie_reservation (LIVRE *tl,RESA *tr, int *nbe)
+{
+	printf("\nLe dernier numéro de réservation attribué est : %d\n",*nbe);
+	printf("N° de réservation : ");
+	scanf("%d",&tr[*nbe].num_resa);
+	printf("N° du livre réservé : ");
+	scanf("%d",&tr[*nbe].num_livre);
+
+
+	printf("L'adhérent empruntera le numéro d'exemplaire : %d",);
+
+	printf("N° de l'exemplaire emprunté : ");
+	scanf("%d",&tr[*nbe].num_exemplaire_emprunte);
+	printf("N° de l'adherent : ");
+	scanf("%d",&tr[*nbe].num_adh);
+	fpurge(stdin);
+	printf("Date de début de l'emprunt : ");
+	scanf("%s",tr[*nbe].date_debut_emprunt);
+	fpurge(stdin);
+
+	*nbe=*nbe+1
+	return;
+}
+*/
+void livre_disponible (LIVRE *t,int nbe)
+{
+	int flag, i, num_livre,j;
+	char nomlivre[80];
+	char nom[80];
+	flag=0;
+
+	printf("De quel livre voulait vous trouver la disponibilité\n");
+	printf("Donnez le titre : ");
+	scanf("%s",nomlivre); // je prend le nom du livre de l'utilisateur
+	i=0;
+	while (i<nbe && flag == 0) // je cherche son numéro
+	{
+		// je copie le nom du livre dans le tableau pour comprarer 
+		strcpy(nom,t[i].titre_livre);
+		// Si le nom est le meme, je recupere  le numero sinon j'augmente i
+		if (strcmp(nom,nomlivre)==0)
+		{
+			flag=1; 
+			num_livre=t[i].num_livre;
+		}
+		else
+		{
+			i++;
+		}
+	}
+	// je verifie s'il est disponible 
+	if(flag==0)
+	{
+		printf("désolée, ce livre n'est pas disponible dans notre bibliothèque\n");
+	}
+	else
+	{
+		// si flag==1 ca veut dire qu'il est disponible, reste a savoir si on a des exemplaires
+		if(t[i].nb_livres_dispo==0)
+		{
+			printf("Désolée, le livre %s n'est pas disponible pour le moment\n",nomlivre);
+		}
+		else
+		{
+			printf("Le livre %s est bien disponible\n",nomlivre);
+			printf("Son numéro est : %d\n",num_livre);
+			printf("L'adherent peut donc emprunter ce livre\n");
+		}
+	}
 	return;
 }
 
@@ -327,6 +400,23 @@ int main()
 					printf("Le livre à bien été ajouté à la bibliothèque\n");
 				}
 			}
+			if (choix_sous_menu==3)
+			{
+				if (plein(nbe_livre,MAX)==1)
+				{
+					printf("Désolée, la bibliothèque ne peut plus recevoir de nouvelle réservations tant que les autres adhérents en nous ramène pas les livres.\n");
+				}
+				else
+				{
+					consigne_ecriture();
+					livre_disponible(tab_livre,nbe_livre);
+					/*
+					saisie_reservation(tab_livre,tab_emprunt,&nbe_resa);
+					printf("La réservation à bien été effectué\n");
+
+					*/
+				}
+			}
 
 		}
 
@@ -370,6 +460,12 @@ int main()
 			printf("\nTapez votre choix : ");
 			fpurge(stdin);
 			scanf("%d",&choix_sous_menu);
+
+			if (choix_sous_menu==2)
+			{
+				consigne_ecriture();
+				livre_disponible(tab_livre,nbe_livre);
+			}
 		}
 
 		if (choix_menu==4)
