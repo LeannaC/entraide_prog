@@ -359,7 +359,7 @@ void augmentation_emprunt(ADHERENT*t,int nbe, int no_adh)
 	return;
 }
 
-int num_adherent(ADHERENT*t,int nbe)
+int num_adherent(ADHERENT*t,int nbe,int *rang)
 {// Ce SP cherche un adherent en fonction u nom et du prenom
 	int no_adh,i, flag;
 	char nom[80];
@@ -368,7 +368,7 @@ int num_adherent(ADHERENT*t,int nbe)
 	char structprenom[80];
 	printf("\n");
 	consigne_ecriture();
-	printf("\nDonnez le nom de l'adhérent qui veut emprunter ce livre : ");
+	printf("\nDonnez le nom de l'adhérent : ");
 	scanf("%s",nom);
 	printf("Donnez le prénom de l'adherent : ");
 	scanf("%s",prenom);
@@ -385,6 +385,7 @@ int num_adherent(ADHERENT*t,int nbe)
 			{
 				flag =1;
 				no_adh = t[i].num_adh;
+				*rang=i;
 			}
 		}
 		else 
@@ -395,7 +396,7 @@ int num_adherent(ADHERENT*t,int nbe)
 	if (flag==1)
 	{
 		printf("le numéro adherent de %s %s est %d\n",t[i].prenom,t[i].nom,no_adh);
-		printf("Vous pouvez proceder à la réservation\n\n");
+		printf("Vous pouvez proceder à la réservation ou à la suppression\n\n");
 		return no_adh;
 	}
 	else
@@ -454,9 +455,40 @@ void saisie_reservation (LIVRE *tl,RESA *tr, int *nbe, int no_exemp,ADHERENT *t,
 	return;
 }
 
-void suppression_adherent(ADHERENT*t,int*nbe)
-{
-	
+void suppression_adherent(ADHERENT*t,int*nbe,int no_adh,int rang)
+{//SP pour supprimer un adherent de la bibliotheque
+	int i;
+	i=rang;
+	while(i<*nbe)
+	{
+		strcpy(t[i].nom,t[i+1].nom);
+		strcpy(t[i].prenom,t[i+1].prenom);
+		t[i].num_adh=t[i+1].num_adh;
+		strcpy(t[i].ville,t[i+1].ville);
+		t[i].nb_livre_emprunte=t[i+1].nb_livre_emprunte;
+		i++;
+	}
+	*nbe=*nbe-1;
+	printf("L'adhérent n°%d à bien été supprimé de la bibliothèque\n",no_adh);
+	return;
+}
+
+int emprunt_en_cour(RESA *t, int nbe,)
+{//SP pour verifier les emprunts en cour d'un adherent
+	int i;
+	i=0;
+
+}
+
+int vide (int nbe)
+{// SP qui permet de savoir si un tableau est vide
+	int flag;
+	flag=0;
+	if (nbe==0)
+	{
+		flag=1;
+	}
+	return flag;
 }
 
 int main()
@@ -466,7 +498,7 @@ int main()
 	RESA tab_emprunt[MAX];
 	char tnomlivre[80];
 
-	int nbe_adh, nbe_livre, nbe_resa, choix_menu, choix_sous_menu, numero_exemp,num_adh;
+	int nbe_adh, nbe_livre, nbe_resa, choix_menu, choix_sous_menu, numero_exemp,num_adh,rang;
 
 	printf("Bonjour madame, la bibliothèque ouvre ses portes \n");
 	printf("Initialisation des données dans les bases\n");
@@ -544,7 +576,7 @@ int main()
 					if (livre_disponible(tab_livre,nbe_livre,tnomlivre)==1)
 					{
 						numero_exemp = numero_exemplaire_emprunte(tab_livre,nbe_livre,tnomlivre);
-						num_adh=num_adherent(tab_adh,nbe_adh); 
+						num_adh=num_adherent(tab_adh,nbe_adh,&rang); 
 						saisie_reservation(tab_livre,tab_emprunt,&nbe_resa,numero_exemp,tab_adh,nbe_adh);
 						augmentation_emprunt(tab_adh,nbe_adh,num_adh);
 						printf("La réservation à bien été effectué\n");
@@ -633,7 +665,17 @@ int main()
 
 			if (choix_sous_menu==1)
 			{
-
+				if (vide(nbe_adh)==0)
+				{
+					num_adh=num_adherent(tab_adh,nbe_adh,&rang);
+					emprunt
+					suppression_adherent(tab_adh,&nbe_adh,num_adh,rang);
+					printf("L'adherent à bien été supprimer\n")
+				}
+				else
+				{
+					printf("Désolée il n'y a aucun adhérent dans la bibliothèque. Vous ne pouvez pas supprimé\n");
+				}
 			}
 		}
 
