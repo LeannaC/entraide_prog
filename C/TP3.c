@@ -133,14 +133,15 @@ void affichage_livre(LIVRE *t, int nbe)
 		printf("N° livre : %d\n",t[i].num_livre);
 		printf("Nombre d'exemplaire : %d\n",t[i].nb_exemplaire);
 		j=0;
+		printf("Nombre disponible : %d\n",t[i].nb_livres_dispo);
+		printf("\n");
 		printf("Exemplaire dispo : ");
-		while(j<t[i].nb_exemplaire)
+		while(j<t[i].nb_livres_dispo)
 		{
 			printf("%d\t",t[i].num_exemplaire[j]);
 			j++;
 		}
 		printf("\n");
-		printf("Nombre disponible : %d\n",t[i].nb_livres_dispo);
 		printf("\n");
 		i++;
 	}
@@ -205,7 +206,7 @@ int plein (int nbe, int M)
 }
 
 void saisie_adherent (ADHERENT*t,int *nbe)
-{
+{// Ce SP permet a la bibliothécaire de rajouter des adherents
 	printf("Donnez le prénom :\n");
 	scanf("%s",t[*nbe].prenom);
 	printf("Donnez le nom : \n");
@@ -222,7 +223,7 @@ void saisie_adherent (ADHERENT*t,int *nbe)
 }
 
 void consigne_ecriture ()
-{
+{//Permet de ne pas faire des betises en ecrivant
 	printf("Consigne à respecter : \n");
 	printf("- Veuillez ecrire en minuscule s'il vous plait\n");
 	printf("- Veuillez remplacer les espaces par : _\n");
@@ -232,14 +233,14 @@ void consigne_ecriture ()
 }
 
 void separation_menu()
-{
+{// PErmet de faire un joli affichage
 	printf("—————————————————————————————————————");
 	printf("\n");
 	return;
 }
 
 void saisie_ouvrage(LIVRE *t,int *nbe)
-{
+{// Ce SP permet a la bibliothécaire de rajouter des livre dans la bibliothèque
 	int i;
 	printf("\nDonner le titre de l'auteur : ");
 	scanf("%s",t[*nbe].nom_auteur);
@@ -250,58 +251,30 @@ void saisie_ouvrage(LIVRE *t,int *nbe)
 	scanf("%d",&t[*nbe].num_livre);
 	printf("Donnez le nombre d'exemplaire : ");
 	scanf("%d",&t[*nbe].nb_exemplaire);
+	t[*nbe].nb_livres_dispo=t[*nbe].nb_exemplaire;
 	printf("Donnez les numéros d'exemplaire : \n");
 	i=0;
-	while(i<t[*nbe].nb_exemplaire)
+	while(i<t[*nbe].nb_livres_dispo)
 	{
 		scanf("%d",&t[*nbe].num_exemplaire[i]);
 		i++;
 	}
-	t[*nbe].nb_livres_dispo=t[*nbe].nb_exemplaire;
 	return;
 }
-/*
-void saisie_reservation (LIVRE *tl,RESA *tr, int *nbe)
-{
-	printf("\nLe dernier numéro de réservation attribué est : %d\n",*nbe);
-	printf("N° de réservation : ");
-	scanf("%d",&tr[*nbe].num_resa);
-	printf("N° du livre réservé : ");
-	scanf("%d",&tr[*nbe].num_livre);
 
-
-	printf("L'adhérent empruntera le numéro d'exemplaire : %d",);
-
-	printf("N° de l'exemplaire emprunté : ");
-	scanf("%d",&tr[*nbe].num_exemplaire_emprunte);
-	printf("N° de l'adherent : ");
-	scanf("%d",&tr[*nbe].num_adh);
-	fpurge(stdin);
-	printf("Date de début de l'emprunt : ");
-	scanf("%s",tr[*nbe].date_debut_emprunt);
-	fpurge(stdin);
-
-	*nbe=*nbe+1
-	return;
-}
-*/
-void livre_disponible (LIVRE *t,int nbe)
-{
+int livre_disponible (LIVRE *t,int nbe, char * t1)
+{//Ce SP donne à la bibliothécaire la possibilité de voir si un livre est dispo ou non
 	int flag, i, num_livre,j;
-	char nomlivre[80];
 	char nom[80];
 	flag=0;
 
-	printf("De quel livre voulait vous trouver la disponibilité\n");
-	printf("Donnez le titre : ");
-	scanf("%s",nomlivre); // je prend le nom du livre de l'utilisateur
 	i=0;
 	while (i<nbe && flag == 0) // je cherche son numéro
 	{
 		// je copie le nom du livre dans le tableau pour comprarer 
 		strcpy(nom,t[i].titre_livre);
 		// Si le nom est le meme, je recupere  le numero sinon j'augmente i
-		if (strcmp(nom,nomlivre)==0)
+		if (strcmp(nom,t1)==0)
 		{
 			flag=1; 
 			num_livre=t[i].num_livre;
@@ -321,16 +294,169 @@ void livre_disponible (LIVRE *t,int nbe)
 		// si flag==1 ca veut dire qu'il est disponible, reste a savoir si on a des exemplaires
 		if(t[i].nb_livres_dispo==0)
 		{
-			printf("Désolée, le livre %s n'est pas disponible pour le moment\n",nomlivre);
+			printf("Désolée, le livre %s n'est pas disponible pour le moment\n",t1);
 		}
 		else
 		{
-			printf("Le livre %s est bien disponible\n",nomlivre);
-			printf("Son numéro est : %d\n",num_livre);
+			printf("\nLe livre %s est bien disponible\n",t1);
+			printf("Le numéro du livre est : %d\n",num_livre);
 			printf("L'adherent peut donc emprunter ce livre\n");
 		}
 	}
+	return flag;
+}
+
+int numero_exemplaire_emprunte (LIVRE *t, int nbe, char *t1)
+{//Ce SP donne a la bibliothécaire le numéro de l'exemplaire du livre a donner 
+	int no_exemp,i, flag, j;
+	char nom[80];
+	flag=0;
+
+	i=0;
+	while (i<nbe && flag == 0) // je cherche son numéro
+	{
+		// je copie le nom du livre dans le tableau pour comprarer 
+		strcpy(nom,t[i].titre_livre);
+		// Si le nom est le meme, je recupere  le numero sinon j'augmente i
+		if (strcmp(nom,t1)==0)
+		{
+			flag=1; 
+			// je trouve le rang 
+		}
+		else
+		{
+			i++;
+		}
+	}
+	// je range le nombre d'exemplaire dispo dans j qui va me permettre d'aller gerer num exemplaire comme une pile
+	j=t[i].nb_livres_dispo; 
+	no_exemp = t[i].num_exemplaire[j-1]; 
+
+	t[i].nb_livres_dispo = t[i].nb_livres_dispo-1;
+
+	return no_exemp; 
+}
+void augmentation_emprunt(ADHERENT*t,int nbe, int no_adh)
+{//Ce SP augmente les emprunt totaux des adherents lorsqu"il emprunte un livre
+	int i,flag;
+	i=0; 
+	flag=0;
+	while (i<nbe && flag ==0)
+	{
+		if (no_adh==t[i].num_adh)
+		{
+			flag=1;
+		}
+		else
+		{
+			i++;
+		}
+	}
+	if (flag==1)
+	{
+		t[i].nb_livre_emprunte=t[i].nb_livre_emprunte+1;
+	}
 	return;
+}
+
+int num_adherent(ADHERENT*t,int nbe)
+{// Ce SP cherche un adherent en fonction u nom et du prenom
+	int no_adh,i, flag;
+	char nom[80];
+	char structnom[80];
+	char prenom[80];
+	char structprenom[80];
+	printf("\n");
+	consigne_ecriture();
+	printf("\nDonnez le nom de l'adhérent qui veut emprunter ce livre : ");
+	scanf("%s",nom);
+	printf("Donnez le prénom de l'adherent : ");
+	scanf("%s",prenom);
+	i=0;
+	flag=0;
+	
+	while(i<nbe && flag == 0)
+	{
+		strcpy(structnom,t[i].nom);
+		strcpy(structprenom,t[i].prenom);
+		if (strcmp(structprenom,prenom)==0)
+		{
+			if (strcmp(structnom,nom)==0)
+			{
+				flag =1;
+				no_adh = t[i].num_adh;
+			}
+		}
+		else 
+		{
+			i++;
+		}
+	}
+	if (flag==1)
+	{
+		printf("le numéro adherent de %s %s est %d\n",t[i].prenom,t[i].nom,no_adh);
+		printf("Vous pouvez proceder à la réservation\n\n");
+		return no_adh;
+	}
+	else
+	{
+		printf("Désolée, nous ne trouvons pas l'adhérent dans la base. Etes vous sur de l'avoir orthographier corectement ou d'avoir respecter les consignes d'ecriture\n");
+		return flag;
+	}
+}
+
+void recherche_par_num_adherent (ADHERENT *t,int nbe_adherent)
+{//ce SP cherche un adherent en fonction de son numéro d'adherent
+	int i, flag, num;
+	printf("Donner le numero de l'adherent que vous voulez trouvez :");
+	scanf("%d",&num);
+	i=0;
+	flag=0;
+	while (i<nbe_adherent && flag ==0)
+	{
+		if (num==t[i].num_adh)
+		{
+			flag=1;
+		}
+		else
+		{
+			i++;
+		}
+	}
+	printf("L'adherent n°%d se nomme %s %s\n",num,t[i].prenom,t[i].nom);
+	printf("\n");
+	return;
+}
+
+void saisie_reservation (LIVRE *tl,RESA *tr, int *nbe, int no_exemp,ADHERENT *t,int nbe_adherent)
+{// Ce SP permet a la bibliothécaire de rajouter des emprunts de livre
+	int flag,i;
+	printf("\nLe dernier numéro de réservation attribué est : %d\n",*nbe);
+	printf("N° de réservation : ");
+	scanf("%d",&tr[*nbe].num_resa);
+	printf("N° du livre réservé : ");
+	scanf("%d",&tr[*nbe].num_livre);
+ 
+	printf("L'adhérent empruntera le numéro d'exemplaire : %d\n",no_exemp);
+
+	printf("N° de l'exemplaire emprunté : ");
+	scanf("%d",&tr[*nbe].num_exemplaire_emprunte);
+	
+	printf("N° de l'adherent : ");
+	scanf("%d",&tr[*nbe].num_adh);
+	fpurge(stdin);
+	printf("Date de début de l'emprunt : ");
+	scanf("%s",tr[*nbe].date_debut_emprunt);
+	fpurge(stdin);
+
+	*nbe=*nbe+1; // c'est le nbe des reservations
+
+	return;
+}
+
+void suppression_adherent(ADHERENT*t,int*nbe)
+{
+	
 }
 
 int main()
@@ -338,8 +464,9 @@ int main()
 	ADHERENT tab_adh[ADH];
 	LIVRE tab_livre[MAX];
 	RESA tab_emprunt[MAX];
+	char tnomlivre[80];
 
-	int nbe_adh, nbe_livre, nbe_resa, choix_menu, choix_sous_menu;
+	int nbe_adh, nbe_livre, nbe_resa, choix_menu, choix_sous_menu, numero_exemp,num_adh;
 
 	printf("Bonjour madame, la bibliothèque ouvre ses portes \n");
 	printf("Initialisation des données dans les bases\n");
@@ -404,20 +531,26 @@ int main()
 			{
 				if (plein(nbe_livre,MAX)==1)
 				{
-					printf("Désolée, la bibliothèque ne peut plus recevoir de nouvelle réservations tant que les autres adhérents en nous ramène pas les livres.\n");
+					printf("Désolée, la bibliothèque ne peut plus recevoir de nouvelle réservations tant que les autres adhérents ne nous ramène pas les livres.\n");
 				}
 				else
 				{
 					consigne_ecriture();
-					livre_disponible(tab_livre,nbe_livre);
-					/*
-					saisie_reservation(tab_livre,tab_emprunt,&nbe_resa);
-					printf("La réservation à bien été effectué\n");
 
-					*/
+					printf("De quel livre voulait vous trouver la disponibilité\n");
+					printf("Donnez le titre : ");
+					scanf("%s",tnomlivre); // je prend le nom du livre de l'utilisateur
+
+					if (livre_disponible(tab_livre,nbe_livre,tnomlivre)==1)
+					{
+						numero_exemp = numero_exemplaire_emprunte(tab_livre,nbe_livre,tnomlivre);
+						num_adh=num_adherent(tab_adh,nbe_adh); 
+						saisie_reservation(tab_livre,tab_emprunt,&nbe_resa,numero_exemp,tab_adh,nbe_adh);
+						augmentation_emprunt(tab_adh,nbe_adh,num_adh);
+						printf("La réservation à bien été effectué\n");
+					}
 				}
 			}
-
 		}
 
 		if (choix_menu==2)
@@ -461,10 +594,18 @@ int main()
 			fpurge(stdin);
 			scanf("%d",&choix_sous_menu);
 
+			if (choix_sous_menu==1)
+			{
+				// SP vide
+				recherche_par_num_adherent(tab_adh,nbe_adh);
+			}
 			if (choix_sous_menu==2)
 			{
 				consigne_ecriture();
-				livre_disponible(tab_livre,nbe_livre);
+				printf("De quel livre voulait vous trouver la disponibilité\n");
+				printf("Donnez le titre : ");
+				scanf("%s",tnomlivre); // je prend le nom du livre de l'utilisateur
+				livre_disponible(tab_livre,nbe_livre,tnomlivre);
 			}
 		}
 
@@ -489,6 +630,11 @@ int main()
 			printf("\nTapez votre choix : ");
 			fpurge(stdin);
 			scanf("%d",&choix_sous_menu);
+
+			if (choix_sous_menu==1)
+			{
+
+			}
 		}
 
 		fpurge(stdin);
