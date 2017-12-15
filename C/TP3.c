@@ -70,7 +70,7 @@ void affichage_adherent(ADHERENT *t, int nbe)
 	int i;
     i=0;
     
-    printf("Prénom\tNom\n");
+    printf("\nPrénom\tNom\n");
 	while(i<nbe) 
 	{
         // affichage
@@ -125,10 +125,10 @@ void affichage_livre(LIVRE *t, int nbe)
 	int i,j;
 	i=0;
 
-	printf("Auteur\t\tTitre\n");
+	printf("\nAuteur\t\tTitre\n");
 	while(i<nbe)
 	{
-		printf("%s\t",t[i].nom_auteur);
+		printf("\n%s\t",t[i].nom_auteur);
 		printf("%s\n",t[i].titre_livre);
 		printf("N° livre : %d\n",t[i].num_livre);
 		printf("Nombre d'exemplaire : %d\n",t[i].nb_exemplaire);
@@ -184,7 +184,7 @@ void affichage_reservation(RESA *t, int nbe)
 	i=0;
 	while(i<nbe)
 	{
-		printf("Réservation n° : %d\n",t[i].num_resa);
+		printf("\nRéservation n° : %d\n",t[i].num_resa);
 		printf("N° Livre : %d\n",t[i].num_livre);
 		printf("N° exemplaire : %d\n",t[i].num_exemplaire_emprunte);
 		printf("N° adhérent : %d\n",t[i].num_adh);
@@ -409,6 +409,8 @@ int num_adherent(ADHERENT*t,int nbe,int *rang)
 void recherche_par_num_adherent (ADHERENT *t,int nbe_adherent)
 {//ce SP cherche un adherent en fonction de son numéro d'adherent
 	int i, flag, num;
+	ADHERENT a;
+
 	printf("Donner le numero de l'adherent que vous voulez trouvez :");
 	scanf("%d",&num);
 	i=0;
@@ -424,9 +426,11 @@ void recherche_par_num_adherent (ADHERENT *t,int nbe_adherent)
 			i++;
 		}
 	}
+	a=t[i]
+	
 	printf("L'adherent n°%d se nomme %s %s\n",num,t[i].prenom,t[i].nom);
 	printf("\n");
-	return;
+	return a;
 }
 
 void saisie_reservation (LIVRE *tl,RESA *tr, int *nbe, int no_exemp,ADHERENT *t,int nbe_adherent)
@@ -473,11 +477,36 @@ void suppression_adherent(ADHERENT*t,int*nbe,int no_adh,int rang)
 	return;
 }
 
-int emprunt_en_cour(RESA *t, int nbe,)
+int emprunt_en_cour(RESA *t, int nbe,int no_adh)
 {//SP pour verifier les emprunts en cour d'un adherent
-	int i;
+	int i,cpt,flag;
 	i=0;
+	cpt=0;
+	flag=0;
+	while(i<nbe)
+	{
+		if (no_adh==t[i].num_adh)
+		{
+			flag=1;
+			cpt++;
+		}
+		i++;
+	}
 
+	printf("L'adhérent n° %d à %d emprunt en cour\n",no_adh,cpt);
+
+	return flag;
+}
+
+void affichage_emprunt(RESA *t1, LIVRES*t2, int nbe_r, int nbe_l,no_adh)
+{
+	int i,j,flag;
+	i=0;
+	flag=0;
+	while(i<nbe_r)
+	{
+		if()
+	}
 }
 
 int vide (int nbe)
@@ -497,7 +526,7 @@ int main()
 	LIVRE tab_livre[MAX];
 	RESA tab_emprunt[MAX];
 	char tnomlivre[80];
-
+// déclarer une ahderent d'une ligne et afficher adherent (modifier recherche num adherent)
 	int nbe_adh, nbe_livre, nbe_resa, choix_menu, choix_sous_menu, numero_exemp,num_adh,rang;
 
 	printf("Bonjour madame, la bibliothèque ouvre ses portes \n");
@@ -610,7 +639,16 @@ int main()
             if (choix_sous_menu==3)
             {
                 affichage_reservation(tab_emprunt,nbe_resa);
-            }
+			}
+			if(choix_sous_menu==5)
+			{
+				num_adh=num_adherent(tab_adh,nbe_adh,&rang);// je cherche l'adherent
+				// je regarde s'il a des emprunts en cours 
+				if(emprunt_en_cour(tab_emprunt,nbe_resa,num_adh)==1)
+				{
+					
+				}
+			}
 		}
 
 		if (choix_menu==3)
@@ -667,10 +705,18 @@ int main()
 			{
 				if (vide(nbe_adh)==0)
 				{
-					num_adh=num_adherent(tab_adh,nbe_adh,&rang);
-					emprunt
-					suppression_adherent(tab_adh,&nbe_adh,num_adh,rang);
-					printf("L'adherent à bien été supprimer\n")
+					num_adh=num_adherent(tab_adh,nbe_adh,&rang);// je cherche l'adherent
+					// je regarde si à des emprunt en cour car s'il en as, nous ne pouvons pas le supprimer tant qu'il pas rendu les livres
+					
+					if (emprunt_en_cour(tab_emprunt,nbe_resa,num_adh)==1)
+					{
+						printf("Nous ne pouvons donc pas encore le supprimer\n");
+						printf("Il doit ramener ses livres avant de se désabonner\n");
+					}
+					else
+					{
+						suppression_adherent(tab_adh,&nbe_adh,num_adh,rang);
+					}
 				}
 				else
 				{
